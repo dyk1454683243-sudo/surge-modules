@@ -1,30 +1,42 @@
-function safeDone(body) {
+function done(body) {
   $done({ body });
 }
 
 try {
   const url = $request.url || "";
   const body = $response.body || "";
-  const len = body.length;
+  const host = (() => {
+    try { return new URL(url).host; } catch { return ""; }
+  })();
 
-  let hit = {
+  const keywords = [
+    "Bellroy",
+    "Venture Sling",
+    "探险家胸包",
+    "1139"
+  ];
+
+  const hits = keywords.filter(k => body.includes(k));
+
+  const info = {
+    host,
     url,
-    length: len,
-    hasSku: false,
-    hasPrice: false,
-    hasTitle: false,
-    hasWare: false
+    length: body.length,
+    hits
   };
 
-  if (body.includes("sku")) hit.hasSku = true;
-  if (body.includes("price")) hit.hasPrice = true;
-  if (body.includes("title")) hit.hasTitle = true;
-  if (body.includes("ware")) hit.hasWare = true;
+  if (hits.length > 0) {
+    console.log("[JD-FIND-HIT] " + JSON.stringify(info));
+  } else {
+    console.log("[JD-FIND-MISS] " + JSON.stringify({
+      host,
+      url,
+      length: body.length
+    }));
+  }
 
-  console.log("[JD-HIT] " + JSON.stringify(hit));
-
-  safeDone(body);
+  done(body);
 } catch (e) {
-  console.log("[JD-HIT-ERROR] " + String(e));
-  safeDone($response.body);
+  console.log("[JD-FIND-ERROR] " + String(e));
+  done($response.body);
 }
