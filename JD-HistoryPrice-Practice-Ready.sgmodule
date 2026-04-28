@@ -1,0 +1,10 @@
+#!name=京东历史价格练习版
+#!desc=练习用：尝试命中京东商品详情接口并插入测试文案
+#!author=OpenAI
+#!system=ios
+
+[Script]
+京东历史价练习 = type=http-response, pattern=^https?:\/\/api\.m\.jd\.com\/client\.action\?functionId=(wareBusiness|serverConfig|basicConfig), requires-body=1, max-size=0, script-path=https://raw.githubusercontent.com/dyk1454683243-sudo/surge-modules/main/jd_history_practice.js
+
+[MITM]
+hostname = %APPEND% api.m.jd.com
