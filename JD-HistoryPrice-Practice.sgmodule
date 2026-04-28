@@ -1,0 +1,14 @@
+#!name=京东历史价格练习版
+#!desc=练习用：尝试命中京东商品详情接口并插入测试文案
+#!author=OpenAI
+#!system=ios
+
+[Script]
+# 说明：
+# 1. 这是练习版骨架，用来学习京东历史价模块的结构
+# 2. script-path 需要改成你自己可访问的 js 地址
+# 3. 如果你暂时没有托管地址，可以先下载同目录里的 jd_history_practice.js 参考脚本内容
+京东历史价练习 = type=http-response, pattern=^https?:\/\/api\.m\.jd\.com\/client\.action\?functionId=(wareBusiness|serverConfig|basicConfig), requires-body=1, max-size=0, script-path=https://example.com/jd_history_practice.js
+
+[MITM]
+hostname = %APPEND% api.m.jd.com
