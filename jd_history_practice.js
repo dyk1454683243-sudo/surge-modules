@@ -3,30 +3,28 @@ function safeDone(body) {
 }
 
 try {
-  const raw = $response.body || "";
-  const obj = JSON.parse(raw);
+  const url = $request.url || "";
+  const body = $response.body || "";
+  const len = body.length;
 
-  obj.__history_price_test__ = "历史价练习模块已命中";
+  let hit = {
+    url,
+    length: len,
+    hasSku: false,
+    hasPrice: false,
+    hasTitle: false,
+    hasWare: false
+  };
 
-  if (Array.isArray(obj.data)) {
-    obj.data = obj.data.map((item) => {
-      if (item && typeof item === "object") {
-        if (typeof item.name === "string" && item.name.length > 0) {
-          item.name = item.name + "｜历史最低¥1999";
-        }
+  if (body.includes("sku")) hit.hasSku = true;
+  if (body.includes("price")) hit.hasPrice = true;
+  if (body.includes("title")) hit.hasTitle = true;
+  if (body.includes("ware")) hit.hasWare = true;
 
-        if (typeof item.openapp === "string" && item.openapp.includes("show_query=")) {
-          item.openapp = item.openapp.replace(
-            /show_query=[^&"]+/,
-            "show_query=" + encodeURIComponent("历史最低价¥1999")
-          );
-        }
-      }
-      return item;
-    });
-  }
+  console.log("[JD-HIT] " + JSON.stringify(hit));
 
-  safeDone(JSON.stringify(obj));
+  safeDone(body);
 } catch (e) {
+  console.log("[JD-HIT-ERROR] " + String(e));
   safeDone($response.body);
 }
